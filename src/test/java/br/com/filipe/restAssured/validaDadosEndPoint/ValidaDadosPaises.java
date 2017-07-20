@@ -1,45 +1,21 @@
 package br.com.filipe.restAssured.validaDadosEndPoint;
 
-import junit.framework.TestCase;
-import static com.jayway.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
-//import org.springframework.web.client.RestTemplate;
+import org.hamcrest.Matchers;
+import com.jayway.restassured.RestAssured;
 
-import org.junit.Test;
-
-//import static com.jayway.restassured.module.jsv.JsonSchemaValidator.*;
-
-public class ValidaDadosPaises extends TestCase {
-	
-	public ValidaDadosPaises() {
-		baseURI = "http://services.groupkt.com/country/get/all";
+public class ValidaDadosPaises {
+	public void verificarQuantidadeTotal(int total) {
+		RestAssured.given().when().get("/country/get/all").then().body("RestResponse.result.alpha3_code",
+		Matchers.hasSize(total));	
 	}
 	
-	@Test
-	public void testMostrarQuantidadeTotalPaises(){
-		String total = "249";
-		given()
-		.when()
-			.get("/")
-		.then()
-			.assertThat()
-			//.body("Result",containsString(total))
-		    .statusCode(200)
-			.body("name", containsString("Afghanistan"));
-		//.body("status", equalTo("success"));
-	}
-	@Test
-	public void testVerificaExistenciaPais() {
-		String total = "249";
-		System.out.println(total);	
-		given()
-			.when()
-			.get("/")
-			.then().log()
-				.body()
-				.assertThat()
-				.body("messages.1", containsString("Total [" + total + "] records found."));
-		//.body("status", equalTo("success"));
-	}
+	public void hasCountry(String country) {
+		RestAssured.given().when().get("/country/get/all").then().body("RestResponse.result.alpha3_code",
+		Matchers.hasItem(country));
+	}	
 	
+	public void pesquisarItem(String countryCode, String item, String tipoitem){
+		RestAssured.given().when().get("/state/get/"+countryCode+"/all").then().body("RestResponse.result." + tipoitem,
+		Matchers.hasItem(item));
+	}
 }
